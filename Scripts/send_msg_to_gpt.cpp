@@ -1,10 +1,9 @@
-#include <ESP8266WiFi.h>
-#include <ESP8266HTTPClient.h>
 
-const char* ssid = "your_SSID";
-const char* password = "your_PASSWORD";
-const char* apiKey = "your_openai_api_key";
 
+const char* ssid = "Yag";
+const char* password = "0545624950";
+const char* apiKey = "sk-None-NWc1XdBugZqGlL46oYVhT3BlbkFJ8ornaGsYwuZsSDljtReU";
+void sendTextToOpenAI(String inputText);
 void setup() {
   Serial.begin(115200);
   WiFi.begin(ssid, password);
@@ -30,8 +29,7 @@ void sendTextToOpenAI(String inputText) {
     http.addHeader("Content-Type", "application/json");
     http.addHeader("Authorization", "Bearer " + String(apiKey));
 
-    String payload = "{\"model\": \"text-davinci-003\", \"prompt\": \"" + inputText + "\", \"max_tokens\": 50}";
-    int httpResponseCode = http.POST(payload);
+    String payload = "{\"model\": \"gpt-3.5-turbo\", \"messages\": [{\"role\": \"user\", \"content\": \"" + inputText + "\"}], \"max_tokens\": 50}";    int httpResponseCode = http.POST(payload);
 
     if (httpResponseCode > 0) {
       String response = http.getString();

@@ -2,7 +2,7 @@ import serial
 import wave
 import struct
 
-COM_PORT = 'COM6'       # Replace with your Arduino's serial port
+COM_PORT = 'COM5'       # Replace with your Arduino's serial port
 BAUD_RATE = 115200
 SAMPLE_RATE = 8000
 BITS_PER_SAMPLE = 16
