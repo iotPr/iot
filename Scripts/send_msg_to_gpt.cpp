@@ -1,5 +1,4 @@
 
-// sk-None-NWc1XdBugZqGlL46oYVhT3BlbkFJ8ornaGsYwuZsSDljtReU
 const char* ssid = "Yag";
 const char* password = "0545624950";
 
