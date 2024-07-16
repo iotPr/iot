@@ -1,8 +1,6 @@
 
 
-const char* ssid = "Yag";
-const char* password = "0545624950";
-const char* apiKey = "sk-None-NWc1XdBugZqGlL46oYVhT3BlbkFJ8ornaGsYwuZsSDljtReU";
+
 void sendTextToOpenAI(String inputText);
 void setup() {
   Serial.begin(115200);
