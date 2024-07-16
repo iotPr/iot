@@ -1,6 +1,4 @@
 
-const char* ssid = "Yag";
-const char* password = "0545624950";
 
 
 void sendTextToOpenAI(String inputText);
