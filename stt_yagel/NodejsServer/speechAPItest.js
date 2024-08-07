@@ -2,9 +2,15 @@ async function main() {
 	// Imports the Google Cloud client library
 	const speech = require("@google-cloud/speech");
 	const fs = require("fs");
+	const path = require('path');
+	const tokenPath = path.join(__dirname, "google_service_tok.json"); // Adjust this path if needed
+
+
 
 	// Creates a client
-	const client = new speech.SpeechClient();
+	const client = new speech.SpeechClient({
+		keyFilename: "google_service_tok.json"
+	  });
 
 	// The name of the audio file to transcribe
 	const fileName = "./resources/recording.wav";
@@ -28,7 +34,10 @@ async function main() {
 	};
 
 	// Detects speech in the audio file
+	console.log("before wait!")
 	const [response] = await client.recognize(request);
+	console.log("after wait!")
+
 	const transcription = response.results.map((result) => result.alternatives[0].transcript).join("\n");
 	console.log(`Transcription: ${transcription}`);
 }

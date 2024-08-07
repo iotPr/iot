@@ -2,10 +2,6 @@
 #include <SPIFFS.h>
 #include <WiFi.h>
 #include <HTTPClient.h>
-#include "Audio.h"
-#define I2S_DOUT      25
-#define I2S_BCLK      27
-#define I2S_LRC       26
 
 
 
@@ -24,8 +20,6 @@ File file;
 const char filename[] = "/recording.wav";
 const int headerSize = 44;
 bool isWIFIConnected;
-
-void uploadFile();
 
 void setup() {
   // put your setup code here, to run once:
@@ -132,8 +126,7 @@ void i2s_adc(void *arg)
     listSPIFFS();
 
     if(isWIFIConnected){
-        Serial.println("now upload from esp to google!");
-        uploadFile();
+      uploadFile();
     }
     
     vTaskDelete(NULL);
@@ -250,7 +243,7 @@ void listSPIFFS(void) {
 
 void wifiConnect(void *pvParameters){
   isWIFIConnected = false;
-  String ssid = "yag";
+  String ssid = "Yag";
   String password = "0545624950";
 
   WiFi.begin(ssid, password);
@@ -258,171 +251,36 @@ void wifiConnect(void *pvParameters){
     vTaskDelay(500);
     Serial.print(".");
   }
-  Serial.println("Wifi is connect!");
   isWIFIConnected = true;
   while(true){
     vTaskDelay(1000);
   }
 }
 
+void uploadFile(){
+  file = SPIFFS.open(filename, FILE_READ);
+  if(!file){
+    Serial.println("FILE IS NOT AVAILABLE!");
+    return;
+  }
 
+  Serial.println("===> Upload FILE to Node.js Server");
 
-//   HTTPClient client;
-//   client.begin("http://172.31.192.1:8888/uploadAudio");
-//   client.addHeader("Content-Type", "audio/wav");
-//   int httpResponseCode = client.sendRequest("POST", &file, file.size());
-//   Serial.print("httpResponseCode : ");
-//   Serial.println(httpResponseCode);
+  HTTPClient client;
+  client.begin("http://172.31.192.1:8888/uploadAudio");
+  client.addHeader("Content-Type", "audio/wav");
+  int httpResponseCode = client.sendRequest("POST", &file, file.size());
+  Serial.print("httpResponseCode : ");
+  Serial.println(httpResponseCode);
 
-    #include <base64.h>
-    #include <WiFiClientSecure.h>
-
-    void uploadFile(){
-        file = SPIFFS.open(filename, FILE_READ);
-        if(!file){
-            Serial.println("FILE IS NOT AVAILABLE!");
-            return;
-        }
-
-
-        Serial.println("play the record");
-        #include <driver/i2s.h>
-
-        // Set I2S configuration for speaker
-        i2s_config_t i2s_speaker_config = {
-            .mode = (i2s_mode_t)(I2S_MODE_MASTER | I2S_MODE_TX),
-            .sample_rate = I2S_SAMPLE_RATE,
-            .bits_per_sample = (i2s_bits_per_sample_t)I2S_SAMPLE_BITS,
-            .channel_format = I2S_CHANNEL_FMT_ONLY_LEFT,
-            .communication_format = I2S_COMM_FORMAT_I2S_MSB,
-            .intr_alloc_flags = 0,
-            .dma_buf_count = 8,
-            .dma_buf_len = 64,
-            .use_apll = false,
-            .tx_desc_auto_clear = true,
-            .fixed_mclk = 0
-        };
-
-        // Set I2S pin configuration for speaker
-        i2s_pin_config_t i2s_speaker_pin_config = {
-            .bck_io_num = I2S_BCLK,
-            .ws_io_num = I2S_LRC,
-            .data_out_num = I2S_DOUT,
-            .data_in_num = I2S_PIN_NO_CHANGE
-        };
-
-        // Initialize I2S driver for speaker
-        i2s_driver_install(I2S_PORT, &i2s_speaker_config, 0, NULL);
-        i2s_set_pin(I2S_PORT, &i2s_speaker_pin_config);
-
-        // Open the WAV file for reading
-        File wavFile = SPIFFS.open(filename, FILE_READ);
-        if (!wavFile) {
-            Serial.println("Failed to open WAV file!");
-            return;
-        }
-
-        // Read the WAV header
-        byte wavHeader[44];
-        wavFile.read(wavHeader, sizeof(wavHeader));
-
-        // Declare the variable 'bytes_written'
-        size_t bytes_written;
-        
-        // Write the WAV header to the I2S speaker
-        i2s_write(I2S_PORT, wavHeader, sizeof(wavHeader), &bytes_written, portMAX_DELAY);
-
-        // Read and write the WAV data to the I2S speaker
-        byte buffer[1024];
-        while (wavFile.available()) {
-            int bytesRead = wavFile.read(buffer, sizeof(buffer));
-            i2s_write(I2S_PORT, buffer, bytesRead, &bytes_written, portMAX_DELAY);
-        }
-
-        // Close the WAV file
-        wavFile.close();
-
-        // Stop the I2S driver for speaker
-        i2s_driver_uninstall(I2S_PORT);
-        
-
-
-
-        // Serial.println("===> convert file to Base64");
-
-        // #include <driver/i2s.h>
-
- 
-        // // Convert file to base64
-        // String base64Data = "";
-        // while (file.available()) {
-        //     base64Data += (char)file.read();
-        // }
-        // String encodedData = base64::encode(base64Data);
-
-        // // Read API key from file
-        // Serial.println("Base64 converted succesfully!");
-        
-        // // create apiKeyFile that will get its content from "stt_yagel\NodejsServer\api_key.txt" (windows path)
-        // // create apiKeyFile that will get its content from "stt_yagel\NodejsServer\api_key.txt" (windows path)
-        // // File apiKeyFile = SPIFFS.open("/stt_yagel/NodejsServer/api_key.txt", FILE_READ);
-        
-
-        // // if (!apiKeyFile) {
-        // //     Serial.println("API key file is not available!");
-        // //     return;
-        // // }
-        // // String apiKey = apiKeyFile.readString();
-        // String apiKey = "AIzaSyAIgezZitJr_mpSK-7bkC7GPstBSTiR9-M";
-        // // apiKeyFile.close();
-
-        // // // Create JSON payload
-        // // DynamicJsonDocument payload(1024);
-        // // payload["audio"] = encodedData;
-        // // payload["api_key"] = apiKey;
-
-        // // // Convert payload to string
-        // // String payloadString;
-        // // serializeJson(payload, payloadString);
-
-        // // Create JSON payload
-        // String payloadString = "{\"audio\":\"" + encodedData + "\",\"api_key\":\"" + apiKey + "\"}";
-
-        // Serial.println(payloadString);
-
-        // // Send HTTP POST request to Google Speech-to-Text API
-        // WiFiClientSecure client;
-        // if (!client.connect("speech.googleapis.com", 443)) {
-        //     Serial.println("Failed to connect to Google Speech-to-Text API!");
-        //     return;
-        // }
-        // client.println("POST /v1/speech:recognize HTTP/1.1");
-        // client.println("Host: speech.googleapis.com");
-        // client.println("Content-Type: application/json");
-        // client.print("Content-Length: ");
-        // client.println(payloadString.length());
-        // client.println();
-        // client.println(payloadString);
-
-        // // Read response from Google Speech-to-Text API
-        // String response = "";
-        // while (client.connected()) {
-        //     String line = client.readStringUntil('\n');
-        //     if (line == "\r") {
-        //     break;
-        //     }
-        // }
-        // while (client.available()) {
-        //     response += (char)client.read();
-        // }
-        // client.stop();
-
-        // // Parse response and extract transcription
-        // String transcription = response.substring(response.indexOf("\"transcript\":\"") + 14);
-        // transcription = transcription.substring(0, transcription.indexOf("\""));
-
-        // // Print transcription to Serial
-        // Serial.println("Transcription: " + transcription);
-    }
-
-    
+  if(httpResponseCode == 200){
+    String response = client.getString();
+    Serial.println("==================== Transcription ====================");
+    Serial.println(response);
+    Serial.println("====================      End      ====================");
+  }else{
+    Serial.println("Error");
+  }
+  file.close();
+  client.end();
+}

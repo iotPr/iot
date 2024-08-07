@@ -4,3 +4,4 @@
 .vscode/launch.json
 .vscode/ipch
 stt_yagel/NodejsServer/node_modules/*
+outsource/*
