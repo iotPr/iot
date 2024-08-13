@@ -1,14 +1,14 @@
-// #include <driver/i2s.h>
+
+#define I2S_WS 25     // aka LRCL
+#define I2S_SD 32     // aka DOUT
+#define I2S_SCK 33    // aka BCLK
 
 
-#define I2S_WS 12
-#define I2S_SD 2
-#define I2S_SCK 13
-// #define I2S_WS 5
-// #define I2S_SD 21
-// #define I2S_SCK 32
 #define I2S_PORT I2S_NUM_0
 #define bufferLen 64
+#include <Arduino.h>
+#include "driver/i2s.h"
+#include "esp_err.h"
 
 void i2s_install();
 void i2s_setpin();
@@ -16,7 +16,7 @@ void i2s_setpin();
 int16_t sBuffer[bufferLen];
 void setup() {
   Serial.begin(115200);
-  Serial.println("Setup I2S ... waiting for you to talk loudly");
+  Serial.println("Setup I2S ...");
 
   delay(1000);
   i2s_install();
@@ -38,12 +38,7 @@ void loop() {
         mean += (sBuffer[i]);
       }
       mean /= samples_read;
-      if(mean > 100){
-        Serial.println("mean: ");
-        Serial.println(mean);
-        Serial.println("llok like it works! :)");
-      }
-      
+      Serial.println(mean);
     }
   }
 }

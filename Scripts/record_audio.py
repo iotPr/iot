@@ -1,27 +1,34 @@
 import serial
+import numpy as np
 import wave
-import struct
 
-COM_PORT = 'COM5'       # Replace with your Arduino's serial port
-BAUD_RATE = 115200
-SAMPLE_RATE = 8000
-BITS_PER_SAMPLE = 16
+# Configure the serial port
+ser = serial.Serial('COM6', 115200)  # Replace 'COM3' with your serial port
 
-ser = serial.Serial(COM_PORT, BAUD_RATE)
+sample_rate = 16000
+seconds_to_record = 5
+num_samples = sample_rate * seconds_to_record
 
-buffer_size = 128      # Buffer size for receiving data
-wav_file = wave.open('recorded_audio.wav', 'wb')
-wav_file.setnchannels(1)    # Mono audio
-wav_file.setsampwidth(2)    # 16-bit samples
-wav_file.setframerate(SAMPLE_RATE)
+# Create a buffer to store the audio data
+audio_data = np.zeros((num_samples,), dtype=np.int16)
 
-try:
-    while True:
-        if ser.in_waiting >= buffer_size * 2:   # Check if enough bytes are available
-            data = ser.read(buffer_size * 2)    # Read data in bytes
-            audio_data = struct.unpack('<' + 'h' * (len(data) // 2), data)   # Convert bytes to integers
-            wav_file.writeframesraw(struct.pack('<' + 'h' * len(audio_data), *audio_data))   # Write data to WAV file
-except KeyboardInterrupt:
-    print("Recording stopped.")
-    wav_file.close()
-    ser.close()
+print("Recording...")
+
+index = 0
+while index < num_samples:
+    if ser.in_waiting:
+        data = ser.read(2)
+        value = int.from_bytes(data, byteorder='little', signed=True)
+        audio_data[index] = value
+        index += 1
+
+print("Recording finished.")
+
+# Save the data to a WAV file
+with wave.open('output.wav', 'w') as wf:
+    wf.setnchannels(1)
+    wf.setsampwidth(2)
+    wf.setframerate(sample_rate)
+    wf.writeframes(audio_data.tobytes())
+
+print("Recording saved to output.wav")
