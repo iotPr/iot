@@ -71,7 +71,9 @@ async function speechToTextAPI() {
 }
 
 const port = 8888;
-server.listen(port, () => {
-    console.log(`Server listening at http://localhost:${port}`);
+const hostname = '0.0.0.0';  // This allows connections from any IP
+
+server.listen(port,hostname, () => {
+    console.log(`Server listening at hppt://${hostname}:${port}`);
     console.log(`Using token file: ${tokenPath}`);
 });

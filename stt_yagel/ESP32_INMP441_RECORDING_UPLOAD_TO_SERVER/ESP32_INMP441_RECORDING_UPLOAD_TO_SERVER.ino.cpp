@@ -4,10 +4,12 @@
 #include <HTTPClient.h>
 
 
-
-#define I2S_WS 15
-#define I2S_SD 13
-#define I2S_SCK 2
+#define I2S_WS 12
+#define I2S_SD 2
+#define I2S_SCK 13
+// #define I2S_WS 15
+// #define I2S_SD 13
+// #define I2S_SCK 2
 #define I2S_PORT I2S_NUM_0
 #define I2S_SAMPLE_RATE   (16000)
 #define I2S_SAMPLE_BITS   (16)
@@ -20,6 +22,8 @@ File file;
 const char filename[] = "/recording.wav";
 const int headerSize = 44;
 bool isWIFIConnected;
+
+void uploadFile();
 
 void setup() {
   // put your setup code here, to run once:
@@ -267,7 +271,7 @@ void uploadFile(){
   Serial.println("===> Upload FILE to Node.js Server");
 
   HTTPClient client;
-  client.begin("http://172.31.192.1:8888/uploadAudio");
+  client.begin("http://192.168.1.37:8888/uploadAudio");
   client.addHeader("Content-Type", "audio/wav");
   int httpResponseCode = client.sendRequest("POST", &file, file.size());
   Serial.print("httpResponseCode : ");
