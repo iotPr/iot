@@ -8,7 +8,6 @@
 
 const char* ssid = "yag";
 const char* password = "0545624950";
-const char* apiKey = "sk-_tyTJ_g1PWrqKewxwB5Uc4Lqg7iv-HAPKpHNz6SLbdT3BlbkFJ_5lUhmv5pGkj9dPAPRMDZxO1-YrxbQIw5jQeZ6dz4A";
 
 void sendTextToOpenAI(String inputText);
 void setup() {
