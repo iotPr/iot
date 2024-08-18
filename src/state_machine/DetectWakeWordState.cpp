@@ -78,3 +78,5 @@ void DetectWakeWordState::exitState()
     uint32_t free_ram = esp_get_free_heap_size();
     Serial.printf("Free ram after DetectWakeWord cleanup %d\n", free_ram);
 }
+
+String DetectWakeWordState::get_response(){return "";}

@@ -20,6 +20,7 @@ private:
 public:
     DetectWakeWordState(I2SSampler *sample_provider);
     void enterState();
+    String get_response();
     bool run();
     void exitState();
 };

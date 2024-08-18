@@ -6,17 +6,12 @@
 Audio::Audio(I2SSampler* i2s_sampler) {
   Serial.printf("Im in audio const0");
   wavData = new char*[wavDataSize/dividedWavDataSize];
-  Serial.printf("Im in audio const1\n");
-  Serial.printf("Num of slice: %d\n", wavDataSize);
-  for (int i = 0; i < NUM_OF_SLICES; ++i) {
-    Serial.printf("heap_b: %d\n", esp_get_free_heap_size());
-
+  Serial.printf("heap_b: %d\n", esp_get_free_heap_size());
+  for (int i = 0; i < wavDataSize/dividedWavDataSize; ++i)
+  {
     wavData[i] = new char[dividedWavDataSize];
-    Serial.printf("heap_a: %d\n", esp_get_free_heap_size());
-
-
-  }
-  Serial.printf("Im in audio const2");
+    Serial.printf("%d", i);
+  } 
   i2s = i2s_sampler;
 }
 
@@ -78,28 +73,15 @@ void Audio::CreateWavHeader(byte* header, int waveDataSize){
 }
 
 void Audio::Record() {
-  Serial.printf("Im in record0");
   CreateWavHeader(paddedHeader, wavDataSize);
   Serial.printf("Im in record1");
-  int bitBitPerSample = i2s->GetBitPerSample();
-  Serial.printf("Im in record2");
-  if (bitBitPerSample == 16) {
-    for (int j = 0; j < NUM_OF_SLICES; ++j) {
-      i2s->Read(i2sBuffer, i2sBufferSize/2);
-      Serial.printf("Im in record3");
-      for (int i = 0; i < i2sBufferSize/8; ++i) {
-        wavData[j][2*i] = i2sBuffer[4*i + 2];
-        wavData[j][2*i + 1] = i2sBuffer[4*i + 3];
-      }
-    }
-  }
-  else if (bitBitPerSample == 32) {
-    for (int j = 0; j < wavDataSize/dividedWavDataSize; ++j) {
-      i2s->Read(i2sBuffer, i2sBufferSize);
-      for (int i = 0; i < i2sBufferSize/8; ++i) {
-        wavData[j][2*i] = i2sBuffer[8*i + 2];
-        wavData[j][2*i + 1] = i2sBuffer[8*i + 3];
-      }
+  Serial.printf("Im in record, %d\n",(wavDataSize/dividedWavDataSize));
+
+  for (int j = 0; j < wavDataSize/dividedWavDataSize; ++j) {
+    i2s->Read(i2sBuffer, i2sBufferSize/2);
+    for (int i = 0; i < i2sBufferSize/8; ++i) {
+      wavData[j][2*i] = i2sBuffer[4*i + 2];
+      wavData[j][2*i + 1] = i2sBuffer[4*i + 3];
     }
   }
 }

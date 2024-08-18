@@ -30,14 +30,13 @@ void WokeWordDetected::enterState()
 void WokeWordDetected::speech_to_text()
 {
     Serial.println("\r\nRecord start!\r\n");
-    // Audio* audio = new Audio(m_sample_provider);
-    // Audio* audio = new Audio(M5STACKFIRE);
-    // audio->Record();
+    Audio* audio = new Audio(m_sample_provider);
+    audio->Record();
     Serial.println("Recording Completed. Now Processing...");
     CloudSpeechClient* cloudSpeechClient = new CloudSpeechClient(USE_APIKEY);
-    // cloudSpeechClient->Transcribe(audio);
+    cloudSpeechClient->Transcribe(audio);
     delete cloudSpeechClient;
-    // delete audio;
+    delete audio;
 }
 bool WokeWordDetected::run()
 {
@@ -62,3 +61,5 @@ void WokeWordDetected::exitState()
     uint32_t free_ram = esp_get_free_heap_size();
     Serial.printf("Free ram after request %d\n", free_ram);
 }
+
+String WokeWordDetected::get_response(){return response;}
