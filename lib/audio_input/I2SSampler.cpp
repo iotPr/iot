@@ -76,7 +76,7 @@ RingBufferAccessor *I2SSampler::getRingBufferReader()
     return reader;
 }
 
-int I2SSampler::Read(char* data, int numData) {
+int I2SSampler::Read(uint8_t* data, int numData) {
     size_t bytes_read = 0;
     esp_err_t result = i2s_read(I2S_NUM_0, (void*)data, numData, &bytes_read, portMAX_DELAY);
     

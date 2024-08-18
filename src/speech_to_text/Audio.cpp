@@ -73,15 +73,15 @@ void Audio::CreateWavHeader(byte* header, int waveDataSize){
 }
 
 void Audio::Record() {
-  CreateWavHeader(paddedHeader, wavDataSize);
-  Serial.printf("Im in record1");
-  Serial.printf("Im in record, %d\n",(wavDataSize/dividedWavDataSize));
+  // CreateWavHeader(paddedHeader, wavDataSize);
+  // Serial.printf("Im in record1");
+  // Serial.printf("Im in record, %d\n",(wavDataSize/dividedWavDataSize));
 
-  for (int j = 0; j < wavDataSize/dividedWavDataSize; ++j) {
-    i2s->Read(i2sBuffer, i2sBufferSize/2);
-    for (int i = 0; i < i2sBufferSize/8; ++i) {
-      wavData[j][2*i] = i2sBuffer[4*i + 2];
-      wavData[j][2*i + 1] = i2sBuffer[4*i + 3];
-    }
-  }
+  // for (int j = 0; j < wavDataSize/dividedWavDataSize; ++j) {
+  //   i2s->Read(i2sBuffer, i2sBufferSize/2);
+  //   for (int i = 0; i < i2sBufferSize/8; ++i) {
+  //     wavData[j][2*i] = i2sBuffer[4*i + 2];
+  //     wavData[j][2*i + 1] = i2sBuffer[4*i + 3];
+  //   }
+  // }
 }

@@ -90,7 +90,7 @@ void setup()
   // startup SPIFFS for the wav files
   // SPIFFS.begin();
   // make sure we don't get killed for our long running tasks
-  // esp_task_wdt_init(10, false);
+  esp_task_wdt_init(100, false);
 
   // start up the I2S input (from either an I2S microphone or Analogue microphone via the ADC)
   I2SSampler *i2s_sampler = new I2SMicSampler(i2s_mic_pins, false);
