@@ -47,10 +47,9 @@ const char* root_ca=
 // $ gcloud auth print-access-token
 // The Access Token is expired in an hour.
 // Google recommends to use Access Token.
-const String AccessToken = "ya29.a0AcM612xk-4teZ57CI4H4eglC-h4khk12nZ1oW3De6hXXsvEgr3HaC3MEdrnGpNYt3eGJ6twbvI6To-UHIWC2VX2MmE6voo2UtouWqt6aA9ACF8HkCPmaTc4DGlvf3fR214jXqnWSPcXjzcYtlcAxBj_M4bm66U4U6aRXWjljLHaO6qzLESQZsHQcNyAoFPyDKJeVEpet96Pjhv7aEvc6gv4e5OJcvULhosndyRW_0QnriofRmJYs1XL1OpvXNI3Yn2PTBXmBqMma68JSYA9Pfc-va68Dqf8wSnyd84I5AmRYkw3ld_c_rDnPPRm5r6QWS5aUXAIL_WlHqmg8YZQy7CAD_nWmYZt334OlWT8ZOwjrjl9UwKGLkK5xhXvW1AoGB1Rb9pIrDRwYzXCiThkOrf9heH07gggaCgYKAU0SARISFQHGX2Mip95C36LRvlavn_h1nxEJVA0422";
 
 // It is also possible to use "API Key" instead of "Access Token". It doesn't have time limit.
-const String ApiKey = "AIzaSyCk9NImxphkSZAq4deZS1e77cCC7BAQdfc";
+const String ApiKey = "";
 
 // see https://cloud.google.com/docs/authentication?hl=ja#getting_credentials_for_server-centric_flow
 // see https://qiita.com/basi/items/3623a576b754f738138e (Japanese)

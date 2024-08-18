@@ -9,7 +9,7 @@
 TxtToGPT::TxtToGPT(String* gpt_request)
 {
     gpt_request = gpt_request;
-    apiKey = "sk-b8cfYAPsbp3uRDwGa642OOhsTCRgpiwoSM2dscuH2XT3BlbkFJYoiC_JC-TOVSAw20a7blo3KUixar7qCc2rOHIYh_8A";
+    apiKey = "";
 }
 void TxtToGPT::enterState()
 {
