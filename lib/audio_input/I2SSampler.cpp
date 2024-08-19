@@ -89,7 +89,23 @@ int I2SSampler::Read(uint8_t* data, int numData) {
         return -1; // or any other error indicator
     }
 }
+// void I2SSampler::changeMicSettings()
+// {
+//     // Stop I2S driver
+//     i2s_stop(I2S_NUM_0);
+//     i2s_config.;
+//     i2s_config.bits_per_sample = bits_per_sample;
+    
+//     // Reinstall I2S driver with new configuration
+//     i2s_driver_uninstall(I2S_NUM_0);
+//     i2s_driver_install(I2S_NUM_0, &i2s_config, 0, NULL);
+//     i2s_set_pin(I2S_NUM_0, &pin_config);
+    
+//     // Restart I2S driver
+//     i2s_start(I2S_NUM_0);
+// }
 
+// }
 
 int I2SSampler::GetBitPerSample() {
   return (int)i2s_bits_per_sample_t(16);

@@ -40,7 +40,7 @@ void WokeWordDetected::speech_to_text()
 }
 bool WokeWordDetected::run()
 {
-    for (int i=0; i<2; i++)
+    for (int i=0; i<1; i++)
     {
     digitalWrite(2, HIGH);
     // Wait for a second

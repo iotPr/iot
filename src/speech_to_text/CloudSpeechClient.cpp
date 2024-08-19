@@ -33,68 +33,73 @@ void CloudSpeechClient::Transcribe() {
     if (WiFi.status() != WL_CONNECTED) {
         Serial.println("Error in WiFi connection");
   }
+  String SpeechtoText_Language = "en-US"; // Language 
 
-  Serial.printf("Im in transcribe");
-  String HttpBody1 = "{\"config\":{\"encoding\":\"LINEAR16\",\"sampleRateHertz\":16000,\"languageCode\":\"en-US\"},\"audio\":{\"content\":\"";
-  Serial.printf("Im in transcribe2");
-  String HttpBody3 = "\"}}\r\n\r\n";
-  String HttpHeader;
-  int record_size = 900000;
-  int httpBody2Length = (record_size + 44) * 4 / 3; // 4/3 is from base64 encoding
+  String HttpBody1 = "{\"config\":{\"encoding\":\"LINEAR16\",\"sampleRateHertz\":44100,\"languageCode\":\"" + SpeechtoText_Language + "\"},\"audio\":{\"content\":\"";
+  String HttpBody3 = "\"}}\r\n\r\n\r\n";
+  int record_size = 270000;
+  int httpBody2Length = (record_size + 48) * 4 / 3; // 4/3 is from base64 encoding
   String ContentLength = String(HttpBody1.length() + httpBody2Length + HttpBody3.length());
-
+  String HttpHeader;
   // if (authentication == USE_APIKEY)
   HttpHeader = String("POST /v1/speech:recognize?key=") + ApiKey
                + String(" HTTP/1.1\r\nHost: speech.googleapis.com\r\nContent-Type: application/json\r\nContent-Length: ") + ContentLength + String("\r\n\r\n");
+  //  else if (authentication == USE_ACCESSTOKEN)
+  //    HttpHeader = String("POST /v1beta1/speech:syncrecognize HTTP/1.1\r\nHost: speech.googleapis.com\r\nContent-Type: application/json\r\nAuthorization: Bearer ")
+  //   + AccessToken + String("\r\nContent-Length: ") + ContentLength + String("\r\n\r\n");
   client.print(HttpHeader);
   client.print(HttpBody1);
+
 
   //  else if (authentication == USE_ACCESSTOKEN)
   //    HttpHeader = String("POST /v1beta1/speech:syncrecognize HTTP/1.1\r\nHost: speech.googleapis.com\r\nContent-Type: application/json\r\nAuthorization: Bearer ")
   //   + AccessToken + String("\r\nContent-Length: ") + ContentLength + String("\r\n\r\n");
-  int buffer_size = 900;
+  int buffer_size = 1200;
+  int dividedWavDataSize = buffer_size/4;
   byte header[44];
-  CloudSpeechClient::CreateWavHeader(header, record_size);
-  String enc = base64::encode(header, 44);
-  client.print(enc);
   byte data[buffer_size];
-
-  for (int i = 0; i<100; i++)
+  CloudSpeechClient::CreateWavHeader(header, record_size);
+  String enc = base64::encode(header, 48);
+  enc.replace("\n", "");
+  client.print(enc);
+  digitalWrite(2, HIGH);
+  for (int i = 0; i<record_size/buffer_size; i++)
   {
+
     int data_read = m_sample_provider->Read(data, buffer_size);
-    Serial.printf("data read is %d bytes", data_read);
     enc = base64::encode(data, buffer_size);
+    enc.replace("\n", "");
     client.print(enc);
-    // Serial.println(enc);
   }
 
-  Serial.printf("Im in transcribe7\n");
+  digitalWrite(2, LOW);
+
   client.print(HttpBody3);
-  String My_Answer="";
-  unsigned long startMillis = millis();
-  unsigned long timeout = 100000; // 10 seconds timeout
+  String My_Answer = "";
   Serial.printf("Im in transcribe8\n");
-
   while (!client.available())
-  { 
-      if (millis() - startMillis >= timeout) {
-        Serial.println("Timeout waiting for client to become available");
-        return;  // Or handle the timeout appropriately
-    }
+  {
+        if (WiFi.status() != WL_CONNECTED) {
+        Serial.println("Error in WiFi connection");
   }
+  };
+  Serial.printf("Im in transcribe9\n");
+
   while (client.available())
   {
     char temp = client.read();
     My_Answer = My_Answer + temp;
-  //  Serial.write(client.read());
+    // Serial.write(client.read());
   }
-  Serial.printf("Im in transcribe11\n");
-  Serial.print("My Answer - ");Serial.println(My_Answer);
+client.stop();
+  // Serial.print("My Answer - ");Serial.println(My_Answer);
   int postion = My_Answer.indexOf('{');
-  Serial.println(postion);
+  // Serial.println(postion);
   ans = My_Answer.substring(postion);
   Serial.print("Json daata--");
   Serial.print(ans);
+  Serial.printf("Im in transcribe10\n");
+
 }
 
 void CloudSpeechClient::sendAudioChunks()
@@ -130,8 +135,8 @@ void CloudSpeechClient::CreateWavHeader(byte* header, int waveDataSize){
   header[21] = 0x00;
   header[22] = 0x01;  // monoral
   header[23] = 0x00;
-  header[24] = 0x80;  // sampling rate 16000
-  header[25] = 0x3E;
+  header[24] = 0x44;  // sampling rate 16000
+  header[25] = 0xAC;
   header[26] = 0x00;
   header[27] = 0x00;
   header[28] = 0x00;  // Byte/sec = 16000x2x1 = 32000
@@ -150,5 +155,10 @@ void CloudSpeechClient::CreateWavHeader(byte* header, int waveDataSize){
   header[41] = (byte)((waveDataSize >> 8) & 0xFF);
   header[42] = (byte)((waveDataSize >> 16) & 0xFF);
   header[43] = (byte)((waveDataSize >> 24) & 0xFF);
+  header[44] = 0;
+  header[45] = 0;
+  header[46] = 0;
+  header[47] = 0;
+
   Serial.printf("Im in wavheader2");
 }

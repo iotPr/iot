@@ -43,7 +43,7 @@ public:
     int Read(uint8_t * data, int numData);
     int GetBitPerSample();
     void start(i2s_port_t i2s_port, i2s_config_t &i2s_config, TaskHandle_t processor_task_handle);
-
+    // void changeMicSettings();
     RingBufferAccessor *getRingBufferReader();
 
     int getCurrentWritePosition()
