@@ -8,6 +8,7 @@
 // #include "Speaker.h"
 // #include "IntentProcessor.h"
 
+
 Application::Application(I2SSampler *sample_provider)
 {
     m_sample_provider = sample_provider;
@@ -19,7 +20,11 @@ Application::Application(I2SSampler *sample_provider)
 // process the next batch of samples
 void Application::run()
 {
-    bool state_done = m_current_state->run();       
+    bool state_done;
+    if (m_current_state_name == StateNames::DETECTWAKEWORD)
+        state_done = true; 
+    else
+        state_done = m_current_state->run();       
     if (state_done)
     {
         m_current_state->exitState();
@@ -39,19 +44,21 @@ void Application::set_next_state()
     }
     else if (m_current_state_name == StateNames::WAKEWORDDETECTED)
     {
-        String* gpt_q = new String(m_current_state->get_response());
+        String* gpt_q = m_current_state->get_response();
+        Serial.println(*gpt_q);
         if (*gpt_q == "Sorry I couldn't understand. Please tell me again!")
         {
             return; //need to go to speaker state and let the user know.
         }
+
         m_current_state_name = StateNames::TXTTOGPT;
         m_current_state = new TxtToGPT(gpt_q);
     }
     else if (m_current_state_name == StateNames::TXTTOGPT)
     {
-        Serial.printf("!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        Serial.println(m_current_state->get_response());
+        Serial.println(*m_current_state->get_response());
         m_current_state_name = StateNames::TXTTOSPEECH;
+        exit(0);
     }
     delete pre_state; 
 }

@@ -77,4 +77,4 @@ void DetectWakeWordState::exitState()
     Serial.printf("Free ram after DetectWakeWord cleanup %d\n", free_ram);
 }
 
-String DetectWakeWordState::get_response(){return "";}
+String* DetectWakeWordState::get_response(){return nullptr;}

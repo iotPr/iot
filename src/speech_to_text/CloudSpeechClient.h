@@ -11,13 +11,12 @@ enum Authentication {
 class CloudSpeechClient {
   I2SSampler *m_sample_provider;
   WiFiClientSecure client;
-  void PrintHttpBody2(Audio* audio);
   Authentication authentication;
 
 public:
   CloudSpeechClient(Authentication authentication, I2SSampler *m_sample_provider);
   ~CloudSpeechClient();
-  String Transcribe();
+  String* Transcribe();
   void sendAudioChunks();
   void CreateWavHeader(byte* header, int wavDataSize);
 };

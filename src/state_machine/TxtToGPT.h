@@ -10,12 +10,12 @@ class TxtToGPT : public State
 private:
     String* gpt_request;
     const char* apiKey;
-    String answer;
+    String* response;
 
 public:
     TxtToGPT(String* gpt_request);
     void enterState();
-    String get_response();
+    String* get_response();
     bool run();
     void exitState();
 };

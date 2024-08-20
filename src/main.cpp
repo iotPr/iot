@@ -16,7 +16,6 @@
 #define I2S_SD 32     // aka DOUT
 #define I2S_SCK 33        // aka BCLK
 
-
 // i2s config for reading from both channels of I2S
 i2s_config_t i2sMemsConfigBothChannels = {
     .mode = (i2s_mode_t)(I2S_MODE_MASTER | I2S_MODE_RX),
@@ -72,12 +71,10 @@ void setup()
   delay(1000);
   Serial.println("Starting up");
   Serial.println("Connecting to WIFI ...");
-
-
   // start up wifi
   // launch WiFi
   WiFi.mode(WIFI_STA);
-  WiFi.begin("ICST", "arduino123");
+  WiFi.begin("YoYoG", "13243546");
   if (WiFi.waitForConnectResult() != WL_CONNECTED)
   {
     Serial.println("Connection Failed! Rebooting...");
@@ -114,7 +111,7 @@ void setup()
 
   // set up the i2s sample writer task
   TaskHandle_t applicationTaskHandle; 
-  xTaskCreate(applicationTask, "Application Task", 8192, application, 1, &applicationTaskHandle);
+  xTaskCreate(applicationTask, "Application Task", 10240, application, 1, &applicationTaskHandle);
 
   // start sampling from i2s device - use I2S_NUM_0 as that's the one that supports the internal ADC
   i2s_sampler->start(I2S_NUM_0, i2sMemsConfigBothChannels, applicationTaskHandle);

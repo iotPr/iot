@@ -24,38 +24,41 @@ WokeWordDetected::WokeWordDetected(I2SSampler *sample_provider)
 }
 void WokeWordDetected::enterState()
 {
-    Serial.println("Ready for action");
+    Serial.println("Entering Speech to Text State");
 }
 
 void WokeWordDetected::speech_to_text()
 {
-    Serial.println("\r\nRecord start!\r\n");
-    Serial.println("Recording Completed. Now Processing...");
     CloudSpeechClient* cloudSpeechClient = new CloudSpeechClient(USE_APIKEY, m_sample_provider);
-    this->response = cloudSpeechClient->Transcribe();
+    response = cloudSpeechClient->Transcribe();
+    Serial.printf("Finish transcribe");
+    if (*response == "" || response == nullptr)
+    {
+        Serial.printf("Google Speech couldnt catch any speech");
+    }
     delete cloudSpeechClient;
+    Serial.printf("After deleteing client");
 }
 bool WokeWordDetected::run()
 {
-    for (int i=0; i<1; i++)
+    for (int i=0; i<6; i++)
     {
     digitalWrite(2, HIGH);
     // Wait for a second
-    delay(1000);
+    delay(100);
     // Turn the LED off
     digitalWrite(2, LOW);
     // Wait for a second
-    delay(1000);
+    delay(100);
     }
     speech_to_text();
+    Serial.printf("After speech to text\n");
     return true;
 }
 
 void WokeWordDetected::exitState()
 {
-    // clean up the speech recognizer client as it takes up a lot of RAM
-    uint32_t free_ram = esp_get_free_heap_size();
-    Serial.printf("Free ram after request %d\n", free_ram);
+    Serial.printf("In exit wokeword\n");
 }
 
-String WokeWordDetected::get_response(){return response;}
+String* WokeWordDetected::get_response(){return response;}
