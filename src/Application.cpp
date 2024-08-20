@@ -39,9 +39,13 @@ void Application::set_next_state()
     }
     else if (m_current_state_name == StateNames::WAKEWORDDETECTED)
     {
-        String* str = new String("Hello World");
+        String* gpt_q = new String(m_current_state->get_response());
+        if (*gpt_q == "Sorry I couldn't understand. Please tell me again!")
+        {
+            return; //need to go to speaker state and let the user know.
+        }
         m_current_state_name = StateNames::TXTTOGPT;
-        m_current_state = new TxtToGPT(str);
+        m_current_state = new TxtToGPT(gpt_q);
     }
     else if (m_current_state_name == StateNames::TXTTOGPT)
     {

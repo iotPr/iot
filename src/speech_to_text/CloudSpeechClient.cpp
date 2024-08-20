@@ -29,7 +29,7 @@ void CloudSpeechClient::PrintHttpBody2(Audio* audio)
   return;
 }
 
-void CloudSpeechClient::Transcribe() {
+String CloudSpeechClient::Transcribe() {
     if (WiFi.status() != WL_CONNECTED) {
         Serial.println("Error in WiFi connection");
   }
@@ -92,14 +92,29 @@ void CloudSpeechClient::Transcribe() {
     // Serial.write(client.read());
   }
 client.stop();
-  // Serial.print("My Answer - ");Serial.println(My_Answer);
-  int postion = My_Answer.indexOf('{');
-  // Serial.println(postion);
-  ans = My_Answer.substring(postion);
-  Serial.print("Json daata--");
-  Serial.print(ans);
-  Serial.printf("Im in transcribe10\n");
+// Serial.print("My Answer - ");Serial.println(My_Answer);
+int postion = My_Answer.indexOf('{');
+// Serial.println(postion);
+ans = My_Answer.substring(postion);
+Serial.print("Json daata--");
+Serial.print(ans);
+Serial.printf("Im in transcribe10\n");
+DynamicJsonDocument doc(1024);
 
+//StaticJsonDocument<384> doc;
+Serial.printf("Im in transcribe11\n");
+
+DeserializationError error = deserializeJson(doc, ans);
+if (error) {
+  Serial.print("deserializeJson() failed: ");
+  Serial.println(error.c_str());
+  return String("Sorry I couldn't understand. Please tell me again!");
+}
+JsonObject results_0 = doc["results"][0];
+//const char*
+const char* chatgpt_Q = results_0["alternatives"][0]["transcript"];
+String chat_gpt_q = String(chatgpt_Q);
+return chat_gpt_q;
 }
 
 void CloudSpeechClient::sendAudioChunks()

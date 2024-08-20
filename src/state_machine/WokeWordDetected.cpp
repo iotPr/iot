@@ -30,13 +30,10 @@ void WokeWordDetected::enterState()
 void WokeWordDetected::speech_to_text()
 {
     Serial.println("\r\nRecord start!\r\n");
-    // Audio* audio = new Audio(m_sample_provider);
-    // audio->Record();
     Serial.println("Recording Completed. Now Processing...");
     CloudSpeechClient* cloudSpeechClient = new CloudSpeechClient(USE_APIKEY, m_sample_provider);
-    cloudSpeechClient->Transcribe();
+    this->response = cloudSpeechClient->Transcribe();
     delete cloudSpeechClient;
-    // delete audio;
 }
 bool WokeWordDetected::run()
 {
@@ -52,7 +49,6 @@ bool WokeWordDetected::run()
     }
     speech_to_text();
     return true;
-
 }
 
 void WokeWordDetected::exitState()

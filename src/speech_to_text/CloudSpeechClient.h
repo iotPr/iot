@@ -17,7 +17,7 @@ class CloudSpeechClient {
 public:
   CloudSpeechClient(Authentication authentication, I2SSampler *m_sample_provider);
   ~CloudSpeechClient();
-  void Transcribe();
+  String Transcribe();
   void sendAudioChunks();
   void CreateWavHeader(byte* header, int wavDataSize);
 };

@@ -77,7 +77,7 @@ void setup()
   // start up wifi
   // launch WiFi
   WiFi.mode(WIFI_STA);
-  WiFi.begin("Home04", "13243546");
+  WiFi.begin("ICST", "arduino123");
   if (WiFi.waitForConnectResult() != WL_CONNECTED)
   {
     Serial.println("Connection Failed! Rebooting...");
