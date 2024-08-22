@@ -12,7 +12,7 @@ class IntentProcessor;
 
 enum StateNames {
     DETECTWAKEWORD,    // 0
-    WAKEWORDDETECTED,  // 1
+    SPEECHTOTXT,  // 1
     TXTTOGPT,          // 2
     TXTTOSPEECH        // 3
 };

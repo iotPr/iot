@@ -54,6 +54,7 @@ String* CloudSpeechClient::Transcribe() {
 
   //start recording 
   digitalWrite(2, HIGH);
+  Serial.printf("Start speaking\n");
   for (int i = 0; i<record_size/buffer_size; i++)
   {
     int data_read = m_sample_provider->Read(data, buffer_size);
@@ -61,6 +62,7 @@ String* CloudSpeechClient::Transcribe() {
     enc.replace("\n", "");
     client.print(enc);
   }
+  Serial.printf("Stop speaking\n");
   digitalWrite(2, LOW);
   //stop recording 
   client.print(HttpBody3);
@@ -85,7 +87,7 @@ Serial.println(postion);
 String ans = My_Answer.substring(postion);
 Serial.print("Json daata--");
 Serial.print(ans);
-DynamicJsonDocument doc(2048);
+DynamicJsonDocument doc(1024);
 
 
 DeserializationError error = deserializeJson(doc, ans);

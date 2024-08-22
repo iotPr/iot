@@ -2,10 +2,6 @@
 #include "TxtToGPT.h"
 #include <ArduinoJson.h>
 
-#define WINDOW_SIZE 320
-#define STEP_SIZE 160
-#define POOLING_SIZE 6
-#define AUDIO_LENGTH 16000
 
 TxtToGPT::TxtToGPT(String* gpt_request)
 {
@@ -46,26 +42,44 @@ bool TxtToGPT::run()
         Serial.println(httpResponseCode);
     }
     http.end();
-    DynamicJsonDocument doc(2048);
+    DynamicJsonDocument doc(1024);
+    Serial.printf("TXTTOGPT3\n");
 
 
     DeserializationError error = deserializeJson(doc, gpt_ans);
     if (error) {
     // Serial.print("deserializeJson() failed: ");
     // Serial.println(error.c_str());
-        return new String("Sorry I couldn't understand. Please tell me again!");
+        this->response =  new String("Sorry I couldn't understand. Please tell me again!");
+        return true;
     }
+    Serial.printf("TXTTOGPT4\n");
     JsonObject results_0 = doc["choices"][0];
-    //const char*
-    const char* chatgpt_A = results_0["content"];
+    Serial.printf("TXTTOGPT5\n");
+    serializeJson(results_0, Serial);
 
-    this->response = new String(chatgpt_A);
+    //const char*
+    const char* chatgpt_A = results_0["message"]["content"];
+    if (chatgpt_A == nullptr)
+    {
+        Serial.printf("TXTTOGPT-1\n");
+        this->response = new String("I didn't understand, please speak again");
+    }
+    else
+    {
+        Serial.printf("TXTTOGPT6\n");
+        Serial.printf("%s", chatgpt_A);
+        this->response = new String(chatgpt_A);
+    }
+        Serial.printf("TXTTOGPT7\n");
+
+    Serial.println(*this->response);
     return true;
 }
 void TxtToGPT::exitState()
 {
     // Create our neural network
-    // delete gpt_request;
+    return;
 }
   
 String* TxtToGPT::get_response()

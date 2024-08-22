@@ -1,8 +1,9 @@
 #include <Arduino.h>
 #include "Application.h"
 #include "state_machine/DetectWakeWordState.h"
-#include "state_machine/WokeWordDetected.h"
+#include "state_machine/SpeechToText.h"
 #include "state_machine/TxtToGPT.h"
+#include "state_machine/TxtToSpeech.h"
 
 // #include "IndicatorLight.h"
 // #include "Speaker.h"
@@ -20,11 +21,7 @@ Application::Application(I2SSampler *sample_provider)
 // process the next batch of samples
 void Application::run()
 {
-    bool state_done;
-    if (m_current_state_name == StateNames::DETECTWAKEWORD)
-        state_done = true; 
-    else
-        state_done = m_current_state->run();       
+     bool state_done = m_current_state->run();       
     if (state_done)
     {
         m_current_state->exitState();
@@ -39,25 +36,26 @@ void Application::set_next_state()
     State* pre_state = m_current_state;
     if (m_current_state_name == StateNames::DETECTWAKEWORD)
     {
-        m_current_state_name = StateNames::WAKEWORDDETECTED;
-        m_current_state = new WokeWordDetected(m_sample_provider);
+        m_current_state_name = StateNames::SPEECHTOTXT;
+        m_current_state = new SpeechToText(m_sample_provider);
     }
-    else if (m_current_state_name == StateNames::WAKEWORDDETECTED)
+    else if (m_current_state_name == StateNames::SPEECHTOTXT)
     {
         String* gpt_q = m_current_state->get_response();
-        Serial.println(*gpt_q);
-        if (*gpt_q == "Sorry I couldn't understand. Please tell me again!")
-        {
-            return; //need to go to speaker state and let the user know.
-        }
-
         m_current_state_name = StateNames::TXTTOGPT;
         m_current_state = new TxtToGPT(gpt_q);
     }
     else if (m_current_state_name == StateNames::TXTTOGPT)
     {
+        String* gpt_answer = m_current_state->get_response();
         Serial.println(*m_current_state->get_response());
         m_current_state_name = StateNames::TXTTOSPEECH;
+        m_current_state = new TxtToSpeech(gpt_answer);
+    }
+    else if (m_current_state_name == StateNames::TXTTOSPEECH)
+    {
+        m_current_state_name = StateNames::DETECTWAKEWORD;
+        m_current_state = new DetectWakeWordState(m_sample_provider);
     }
     delete pre_state; 
 }
