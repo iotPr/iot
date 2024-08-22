@@ -58,7 +58,6 @@ void Application::set_next_state()
     {
         Serial.println(*m_current_state->get_response());
         m_current_state_name = StateNames::TXTTOSPEECH;
-        exit(0);
     }
     delete pre_state; 
 }

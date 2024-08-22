@@ -9,7 +9,6 @@
 // #include "WitAiChunkedUploader.h"
 #include "../config.h"
 #include <string.h>
-#include "speech_to_text/Audio.h"
 #include "speech_to_text/CloudSpeechClient.h"
 
 #define WINDOW_SIZE 320
