@@ -2,7 +2,8 @@
 #include "network_param.h"
 #include <base64.h>
 #include <ArduinoJson.h>
-#include "Audio.h"
+#include "I2SSampler.h"
+
 
 CloudSpeechClient::CloudSpeechClient(Authentication authentication, I2SSampler *m_sample_provider) 
 {
@@ -27,20 +28,23 @@ String* CloudSpeechClient::Transcribe() {
         Serial.println("Error in WiFi connection");
   }
   String SpeechtoText_Language = "en-US"; // Language 
-
+  // build http format, after "content:" will go our record. 
   String HttpBody1 = "{\"config\":{\"encoding\":\"LINEAR16\",\"sampleRateHertz\":44100,\"languageCode\":\"" + SpeechtoText_Language + "\"},\"audio\":{\"content\":\"";
   String HttpBody3 = "\"}}\r\n\r\n\r\n";
   int record_size = 270000;
   int httpBody2Length = (record_size + 48) * 4 / 3; // 4/3 is from base64 encoding
+
+  // content length is super important!!! If it's not accurate then google won't response to any request
   String ContentLength = String(HttpBody1.length() + httpBody2Length + HttpBody3.length());
+
+
   String HttpHeader = String("POST /v1/speech:recognize?key=") + ApiKey
                + String(" HTTP/1.1\r\nHost: speech.googleapis.com\r\nContent-Type: application/json\r\nContent-Length: ") + ContentLength + String("\r\n\r\n");
   client.print(HttpHeader);
   client.print(HttpBody1);
 
-
+// start creating the wav and record
   int buffer_size = 1200;
-  // byte header[44];
   byte header[44 + 4] = {0}; 
   byte data[buffer_size];
   CloudSpeechClient::CreateWavHeader(header, record_size);
@@ -48,6 +52,7 @@ String* CloudSpeechClient::Transcribe() {
   enc.replace("\n", "");
   client.print(enc);
 
+  //start recording 
   digitalWrite(2, HIGH);
   for (int i = 0; i<record_size/buffer_size; i++)
   {
@@ -57,7 +62,7 @@ String* CloudSpeechClient::Transcribe() {
     client.print(enc);
   }
   digitalWrite(2, LOW);
-
+  //stop recording 
   client.print(HttpBody3);
   String My_Answer = "";
   while (!client.available())
