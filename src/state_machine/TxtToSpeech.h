@@ -10,9 +10,7 @@ class TxtToSpeech : public State
 {
 private:
     String* gpt_answer;
-    const char* apiKey;
-    String* response;
-    Audio* audio;
+    Audio audio;
 
 public:
     TxtToSpeech(String* gpt_request);

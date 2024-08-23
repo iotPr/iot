@@ -52,7 +52,6 @@ void Application::set_next_state()
     else if (m_current_state_name == StateNames::TXTTOGPT)
     {
         String* gpt_answer = m_current_state->get_response();
-        Serial.println(*m_current_state->get_response());
         m_current_state_name = StateNames::TXTTOSPEECH;
         m_current_state = new TxtToSpeech(gpt_answer);
     }

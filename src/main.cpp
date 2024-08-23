@@ -85,7 +85,7 @@ void setup()
 
   // set up the i2s sample writer task
   TaskHandle_t applicationTaskHandle; 
-  xTaskCreate(applicationTask, "Application Task", 12288, application, 1, &applicationTaskHandle);
+  xTaskCreate(applicationTask, "Application Task", 8192, application, 1, &applicationTaskHandle);
 
   // start sampling from i2s device - use I2S_NUM_0 as that's the one that supports the internal ADC
   i2s_sampler->start(I2S_NUM_0, i2sMemsConfigBothChannels, applicationTaskHandle);
@@ -93,5 +93,6 @@ void setup()
 
 void loop()
 {
+  
   vTaskDelay(10000);
 }
