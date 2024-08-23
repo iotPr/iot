@@ -12,6 +12,7 @@ private:
     String* gpt_answer;
     const char* apiKey;
     String* response;
+    Audio* audio;
 
 public:
     TxtToSpeech(String* gpt_request);

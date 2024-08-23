@@ -20,8 +20,12 @@ Application::Application(I2SSampler *sample_provider)
 
 // process the next batch of samples
 void Application::run()
-{
-     bool state_done = m_current_state->run();       
+{   
+    bool state_done;
+    if(m_current_state_name == StateNames::DETECTWAKEWORD)
+        state_done = true;
+    else
+        state_done = m_current_state->run();       
     if (state_done)
     {
         m_current_state->exitState();
