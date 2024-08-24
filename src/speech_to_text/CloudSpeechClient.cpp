@@ -140,9 +140,9 @@ void CloudSpeechClient::CreateWavHeader(byte* header, int waveDataSize){
   header[25] = 0xAC;
   header[26] = 0x00;
   header[27] = 0x00;
-  header[28] = 0x00;  // Byte/sec = 16000x2x1 = 32000
-  header[29] = 0x7D;
-  header[30] = 0x00;
+  header[28] = 0x88;  // Byte/sec = 44100x2x1 = 88200
+  header[29] = 0x58;
+  header[30] = 0x01;
   header[31] = 0x00;
   header[32] = 0x02;  // 16bit monoral
   header[33] = 0x00;

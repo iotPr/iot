@@ -21,7 +21,7 @@ class Application
 {
 private:
     State* m_current_state;
-    I2SSampler* m_sample_provider;
+    // I2SSampler* m_sample_provider;
     StateNames m_current_state_name;
     std::string* m_txt_from_google;
     std::string* m_gpt_answer;
@@ -29,6 +29,7 @@ private:
 
 
 public:
+    I2SSampler* m_sample_provider;
     Application(I2SSampler *sample_provider);
     ~Application();
     void run();

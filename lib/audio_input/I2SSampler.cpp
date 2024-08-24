@@ -9,17 +9,21 @@ void I2SSampler::addSample(int16_t sample)
 {
     // store the sample
     m_write_ring_buffer_accessor->setCurrentSample(sample);
-    if (m_write_ring_buffer_accessor->moveToNextSample())
+    if (m_write_ring_buffer_accessor->moveToNextSample() && this->stop_task == false)
     {
         // trigger the processor task as we've filled a buffer
         xTaskNotify(m_processor_task_handle, 1, eSetBits);
     }
+    else if (this->stop_task == true)
+        xTaskNotify(m_processor_task_handle, 1, eSetBits);
+
+    
 }
 
 void i2sReaderTask(void *param)
 {
     I2SSampler *sampler = (I2SSampler *)param;
-    while (true)
+    while (!sampler->stop_task)
     {
         // wait for some data to arrive on the queue
         i2s_event_t evt;
@@ -36,14 +40,20 @@ void i2sReaderTask(void *param)
 -                    i2s_read(I2S_NUM_0, i2sData, 1024, &bytesRead, 10);                    
                     // process the raw data
                     sampler->processI2SData(i2sData, bytesRead);
-                } while (bytesRead > 0);
+                } while (bytesRead > 0 && sampler->stop_task==false);
             }
         }
     }
+    vTaskDelay(100);
+    i2s_driver_uninstall(I2S_NUM_0);
+    vTaskDelete(NULL);
+
 }
 
-I2SSampler::I2SSampler()
+I2SSampler::I2SSampler(i2s_config_t config)
 {
+    this-> config = config;
+    this->stop_task = false;
     // allocate the audio buffers
     for (int i = 0; i < AUDIO_BUFFER_COUNT; i++)
     {
@@ -52,13 +62,13 @@ I2SSampler::I2SSampler()
     m_write_ring_buffer_accessor = new RingBufferAccessor(m_audio_buffers, AUDIO_BUFFER_COUNT);
 }
 
-void I2SSampler::start(i2s_port_t i2s_port, i2s_config_t &i2s_config, TaskHandle_t processor_task_handle)
+void I2SSampler::start(i2s_port_t i2s_port, TaskHandle_t processor_task_handle)
 {
     Serial.println("Starting i2s");
     m_i2s_port = i2s_port;
     m_processor_task_handle = processor_task_handle;
     //install and start i2s driver
-    i2s_driver_install(I2S_NUM_0, &i2s_config, 4, &m_i2s_queue);
+    i2s_driver_install(I2S_NUM_0, &this->config, 4, &m_i2s_queue);
     // set up the I2S configuration from the subclass
     configureI2S();
     // set up clock, for matching the timing between the data an the mic
@@ -89,23 +99,19 @@ int I2SSampler::Read(uint8_t* data, int numData) {
         return -1; // or any other error indicator
     }
 }
-// void I2SSampler::changeMicSettings()
-// {
-//     // Stop I2S driver
-//     i2s_stop(I2S_NUM_0);
-//     i2s_config.;
-//     i2s_config.bits_per_sample = bits_per_sample;
-    
-//     // Reinstall I2S driver with new configuration
-//     i2s_driver_uninstall(I2S_NUM_0);
-//     i2s_driver_install(I2S_NUM_0, &i2s_config, 0, NULL);
-//     i2s_set_pin(I2S_NUM_0, &pin_config);
-    
-//     // Restart I2S driver
-//     i2s_start(I2S_NUM_0);
-// }
 
-// }
+
+void I2SSampler::stop() {
+    stop_task = true;
+
+    // Wait until the task has stopped (optional but recommended)
+    while (eTaskGetState(m_reader_task_handle) != eDeleted) {
+        delay(10); // Small delay to let the task exit gracefully
+    }
+    i2s_driver_install(I2S_NUM_0, &this->config, 4, NULL);
+    Serial.println("I2S Reader Task stopped.");
+}
+
 
 int I2SSampler::GetBitPerSample() {
   return (int)i2s_bits_per_sample_t(16);

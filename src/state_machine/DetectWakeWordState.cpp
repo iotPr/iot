@@ -69,6 +69,7 @@ bool DetectWakeWordState::run()
 void DetectWakeWordState::exitState()
 {
     // Create our neural network
+    m_sample_provider->stop();
     delete m_nn;
     m_nn = NULL;
     delete m_audio_processor;

@@ -2,7 +2,7 @@
 #include "driver/i2s.h"
 #include "soc/i2s_reg.h"
 
-I2SMicSampler::I2SMicSampler(i2s_pin_config_t &i2sPins, bool fixSPH0645) : I2SSampler()
+I2SMicSampler::I2SMicSampler(i2s_pin_config_t &i2sPins, i2s_config_t config, bool fixSPH0645) : I2SSampler(config)
 {
     m_i2sPins = i2sPins;
     m_fixSPH0645 = fixSPH0645;

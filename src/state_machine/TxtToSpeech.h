@@ -10,7 +10,7 @@ class TxtToSpeech : public State
 {
 private:
     String* gpt_answer;
-    Audio audio;
+    Audio* audio;
 
 public:
     TxtToSpeech(String* gpt_request);

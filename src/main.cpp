@@ -43,12 +43,20 @@ void applicationTask(void *param)
   const TickType_t xMaxBlockTime = pdMS_TO_TICKS(10000);
   while (true)
   {
-    // wait for some audio samples to arrive
-    uint32_t ulNotificationValue = ulTaskNotifyTake(pdTRUE, xMaxBlockTime);
-    if (ulNotificationValue > 0)
+    if (application->m_sample_provider->stop_task == true)
     {
       application->run();
     }
+    else
+    {
+//  wait for some audio samples to arrive
+      uint32_t ulNotificationValue = ulTaskNotifyTake(pdTRUE, xMaxBlockTime);
+      if (ulNotificationValue > 0)
+      {
+        application->run();
+      }
+    }
+    //
   }
 }
 
@@ -78,7 +86,7 @@ void setup()
   esp_task_wdt_init(100, false);
 
   // start up the I2S input (from either an I2S microphone or Analogue microphone via the ADC)
-  I2SSampler *i2s_sampler = new I2SMicSampler(i2s_mic_pins, false);
+  I2SSampler *i2s_sampler = new I2SMicSampler(i2s_mic_pins, i2sMemsConfigBothChannels, false);
 
   // create our application
   Application *application = new Application(i2s_sampler);
@@ -88,11 +96,10 @@ void setup()
   xTaskCreate(applicationTask, "Application Task", 8192, application, 1, &applicationTaskHandle);
 
   // start sampling from i2s device - use I2S_NUM_0 as that's the one that supports the internal ADC
-  i2s_sampler->start(I2S_NUM_0, i2sMemsConfigBothChannels, applicationTaskHandle);
+  i2s_sampler->start(I2S_NUM_0, applicationTaskHandle);
 }
 
 void loop()
 {
-  
-  vTaskDelay(10000);
+  vTaskDelay(100);
 }

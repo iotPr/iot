@@ -28,6 +28,8 @@ private:
     QueueHandle_t m_i2s_queue;
     // i2s port
     i2s_port_t m_i2s_port;
+    
+    i2s_config_t config;
 
 protected:
     void addSample(int16_t sample);
@@ -39,10 +41,12 @@ protected:
     }
 
 public:
-    I2SSampler();
+    I2SSampler(i2s_config_t config);
+    bool stop_task;
+    void stop();
     int Read(uint8_t * data, int numData);
     int GetBitPerSample();
-    void start(i2s_port_t i2s_port, i2s_config_t &i2s_config, TaskHandle_t processor_task_handle);
+    void start(i2s_port_t i2s_port, TaskHandle_t processor_task_handle);
     // void changeMicSettings();
     RingBufferAccessor *getRingBufferReader();
 

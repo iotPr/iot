@@ -5,16 +5,18 @@
 
 TxtToGPT::TxtToGPT(String* gpt_request)
 {
+    Serial.printf("I'm in ttg constructor");
     this->gpt_request = gpt_request;
     Serial.println(*this->gpt_request);
     apiKey = "sk-Dem3XHGSgPVtMeJUO8iWZxQTVGrdJjMbq4czUPWGqZT3BlbkFJPFZeKbc6Gl6xxCSpRwjwAIkSOT83_ENmVKGDsCHRkA";
 }
 void TxtToGPT::enterState()
 {
-    return;
+    Serial.printf("I'm in ttg enterstate");
 }
 bool TxtToGPT::run()
 {
+    Serial.printf("I'm in ttg1");
   if (WiFi.status() != WL_CONNECTED) {
         Serial.println("Error in WiFi connection");
   }

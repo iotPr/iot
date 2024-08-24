@@ -28,7 +28,9 @@ void SpeechToText::enterState()
 
 void SpeechToText::speech_to_text()
 {
+    Serial.println("In speech to text");
     CloudSpeechClient* cloudSpeechClient = new CloudSpeechClient(USE_APIKEY, m_sample_provider);
+    Serial.println("Creating client obj");
     response = cloudSpeechClient->Transcribe();
     Serial.printf("Finish transcribe\n");
     if (*response == "" || response == nullptr)
@@ -39,10 +41,12 @@ void SpeechToText::speech_to_text()
         delete error;
     }
     delete cloudSpeechClient;
-    Serial.printf("After deleteing client");
+    Serial.printf("After deleteing client\n");
 }
 bool SpeechToText::run()
 {
+    delay(1000);
+    Serial.printf("in run stt\n");
     for (int i=0; i<6; i++)
     {
     digitalWrite(2, HIGH);
@@ -53,6 +57,7 @@ bool SpeechToText::run()
     // Wait for a second
     delay(100);
     }
+    Serial.printf("in run stt2\n");
     speech_to_text();
     Serial.printf("After speech to text\n");
     return true;
