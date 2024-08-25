@@ -3,7 +3,6 @@
 #include <ArduinoJson.h>
 #include "Audio.h"
 #include <vector>
-#include "WiFiMulti.h"
 
 #define I2S_DOUT      25
 #define I2S_BCLK      14
@@ -27,9 +26,6 @@ std::vector<String> divideIntoWords(const String& str) {
     return words;
 }
 
-
-
-
 TxtToSpeech::TxtToSpeech(String* gpt_answer)
 {
     this->gpt_answer = gpt_answer;
@@ -37,46 +33,29 @@ TxtToSpeech::TxtToSpeech(String* gpt_answer)
 }
 void TxtToSpeech::enterState()
 {
-//     WiFiMulti wifiMulti;
-//     wifiMulti.addAP("Home04", "13243546");
-//     wifiMulti.run();
-//     if(WiFi.status() != WL_CONNECTED){
-//       WiFi.disconnect(true);
-//       wifiMulti.run();
-//   }
-
-
     audio->setPinout(I2S_BCLK, I2S_LRC, I2S_DOUT);
-
-    audio->setVolume(18); // 0...21
-    audio->connecttospeech("Starting", "en"); // Google TTS
+    audio->setVolume(21); // 0...21
 }
 bool TxtToSpeech::run()
 {
     String Answer = *this->gpt_answer;
     std::vector<String> words = divideIntoWords(Answer);
-    int max_length = 20;
+    int max_length = 40;
     delete this->gpt_answer;
     // Output the words
     String current_word = ""; 
     for (const auto& word : words) {
         current_word = current_word + " " + word;
-        if (current_word.length() >= max_length)
+        if (current_word.length() >= max_length || (&word == &words[words.size()-1]))
         {
             Serial.println(current_word);
             audio->connecttospeech(current_word.c_str(), "en");
+            // delay(1000);  // Add delay here
             current_word = "";
         }
         else
-        {
-            if (&word == &words[words.size()-1])
-            {
-                Serial.println(current_word);
-                audio->connecttospeech(current_word.c_str(), "en");
-            }
-            else
-                continue;
-        }
+            continue;
+
         while(audio->isRunning()){
             audio->loop();
         }
@@ -85,21 +64,6 @@ bool TxtToSpeech::run()
     return true;
 }
 
-    //-----
-        // Split the answer into chunks and send each chunk to connecttospeech
-    // size_t chunkSize = 80;  // Define chunk size (adjust if necessary)
-    // for (size_t i = 0; i < Answer.length(); i += chunkSize) {
-
-    //     String chunk = Answer.substring(i, (i + chunkSize));
-    //     Serial.println(chunk);
-    //     audio.connecttospeech(chunk.c_str(), "en");
-
-    //     while(audio.isRunning()){
-    //         audio.loop();
-    //     }
-    // }
-    // audio.loop();
-    // return true;
 
 void TxtToSpeech::exitState()
 {
