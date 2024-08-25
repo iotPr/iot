@@ -11,11 +11,6 @@
 #include <string.h>
 #include "speech_to_text/CloudSpeechClient.h"
 
-#define WINDOW_SIZE 320
-#define STEP_SIZE 160
-#define POOLING_SIZE 6
-#define AUDIO_LENGTH 16000
-
 SpeechToText::SpeechToText(I2SSampler *sample_provider)
 {
     // save the sample provider for use later
@@ -45,7 +40,6 @@ void SpeechToText::speech_to_text()
 }
 bool SpeechToText::run()
 {
-    delay(1000);
     Serial.printf("in run stt\n");
     for (int i=0; i<6; i++)
     {
