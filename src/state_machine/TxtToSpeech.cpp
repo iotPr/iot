@@ -5,7 +5,7 @@
 #include <vector>
 
 #define I2S_DOUT      25
-#define I2S_BCLK      14
+#define I2S_BCLK      27
 #define I2S_LRC       26
 
 std::vector<String> divideIntoWords(const String& str) {

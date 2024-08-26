@@ -7,9 +7,9 @@
 #include "Application.h"
 
 
-#define I2S_WS 5     // aka LRCL
-#define I2S_SD 2     // aka DOUT
-#define I2S_SCK 21        // aka BCLK
+#define I2S_WS 21     // aka LRCL
+#define I2S_SD 18     // aka DOUT
+#define I2S_SCK 19        // aka BCLK
 
 
 // i2s config for reading from both channels of I2S
@@ -72,7 +72,7 @@ void setup()
   // start up wifi
   // launch WiFi
   WiFi.mode(WIFI_STA);
-  WiFi.begin("Home04", "13243546");
+  WiFi.begin("yag", "0545624950");
   if (WiFi.waitForConnectResult() != WL_CONNECTED)
   {
     Serial.println("Connection Failed! Rebooting...");
