@@ -29,6 +29,8 @@ std::vector<String> divideIntoWords(const String& str) {
 TxtToSpeech::TxtToSpeech(String* gpt_answer)
 {
     this->gpt_answer = gpt_answer;
+    Serial.printf("In tts constructor gpt answer is : \n");
+    Serial.println(*this->gpt_answer);
     this->audio = new Audio(false, 3, I2S_NUM_1);
 }
 void TxtToSpeech::enterState()

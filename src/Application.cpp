@@ -21,7 +21,16 @@ Application::Application(I2SSampler *sample_provider)
 // process the next batch of samples
 void Application::run()
 {   
-    bool state_done = m_current_state->run();
+    bool state_done;
+    if (m_current_state_name == StateNames::DETECTWAKEWORD)
+    {
+        state_done = true;
+    }
+    else{
+        state_done = m_current_state->run();
+
+    }
+    
     if (state_done)
     {
         m_current_state->exitState();
@@ -44,8 +53,16 @@ void Application::set_next_state()
     {
         String* gpt_q = m_current_state->get_response();
         delete pre_state;
-        m_current_state_name = StateNames::TXTTOGPT;
-        m_current_state = new TxtToGPT(gpt_q);
+        if (*gpt_q == "Please Try Again")
+        {
+            m_current_state_name = StateNames::TXTTOSPEECH;
+            m_current_state = new TxtToSpeech(gpt_q);
+        }
+        else
+        {
+            m_current_state_name = StateNames::TXTTOGPT;
+            m_current_state = new TxtToGPT(gpt_q);
+        }
     }
     else if (m_current_state_name == StateNames::TXTTOGPT)
     {

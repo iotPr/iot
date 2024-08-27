@@ -5,3 +5,4 @@
 .vscode/ipch
 stt_yagel/NodejsServer/node_modules/*
 outsource/*
+platformio.ini
