@@ -41,7 +41,6 @@ bool DetectWakeWordState::run()
     float *input_buffer = m_nn->getInputBuffer();
     // process the samples to get the spectrogram
     m_audio_processor->get_spectrogram(reader, input_buffer);
-    
     // finished with the sample reader
     delete reader;
     // get the prediction for the spectrogram
@@ -60,6 +59,7 @@ bool DetectWakeWordState::run()
         if (m_number_of_detections > 0)
         {
             m_number_of_detections = 0;
+            m_sample_provider->stop();
             return true;
         }
     }

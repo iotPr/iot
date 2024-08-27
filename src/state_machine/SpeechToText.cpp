@@ -11,10 +11,9 @@
 #include <string.h>
 #include "speech_to_text/CloudSpeechClient.h"
 
-SpeechToText::SpeechToText(I2SSampler *sample_provider)
+SpeechToText::SpeechToText()
 {
     // save the sample provider for use later
-    m_sample_provider = sample_provider;
 }
 void SpeechToText::enterState()
 {
@@ -24,7 +23,7 @@ void SpeechToText::enterState()
 void SpeechToText::speech_to_text()
 {
     Serial.println("In speech to text");
-    CloudSpeechClient* cloudSpeechClient = new CloudSpeechClient(USE_APIKEY, m_sample_provider);
+    CloudSpeechClient* cloudSpeechClient = new CloudSpeechClient(USE_APIKEY);
     Serial.println("Creating client obj");
     response = cloudSpeechClient->Transcribe();
     Serial.printf("Finish transcribe\n");

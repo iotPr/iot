@@ -10,7 +10,6 @@ class AudioProcessor;
 class DetectWakeWordState : public State
 {
 private:
-    I2SSampler *m_sample_provider;
     NeuralNetwork *m_nn;
     AudioProcessor *m_audio_processor;
     float m_average_detect_time;
@@ -23,6 +22,8 @@ public:
     String* get_response();
     bool run();
     void exitState();
+    I2SSampler *m_sample_provider;
+
 };
 
 #endif

@@ -2,12 +2,25 @@
 #include "network_param.h"
 #include <base64.h>
 #include <ArduinoJson.h>
-#include "I2SSampler.h"
+#include <driver/i2s.h>
+
+int read_from_mic(uint8_t* data, int numData) {
+    size_t bytes_read = 0;
+    esp_err_t result = i2s_read(I2S_NUM_0, (void*)data, numData, &bytes_read, portMAX_DELAY);
+    
+    // Check if the read was successful
+    if (result == ESP_OK) {
+        return bytes_read;
+    } else {
+        // Handle the error case (you can choose what to return in case of an error)
+        Serial.printf("Error occured! Couldn't read data from mic");
+        return -1; // or any other error indicator
+    }
+}
 
 
-CloudSpeechClient::CloudSpeechClient(Authentication authentication, I2SSampler *m_sample_provider) 
+CloudSpeechClient::CloudSpeechClient(Authentication authentication) 
 {
-  this->m_sample_provider = m_sample_provider;
   this->authentication = authentication;
   client.setCACert(root_ca);
   int trys_to_connect = 3;
@@ -57,7 +70,7 @@ String* CloudSpeechClient::Transcribe() {
   Serial.printf("Start speaking\n");
   for (int i = 0; i<record_size/buffer_size; i++)
   {
-    int data_read = m_sample_provider->Read(data, buffer_size);
+    int data_read = read_from_mic(data, buffer_size);
     enc = base64::encode(data, buffer_size);
     enc.replace("\n", "");
     client.print(enc);

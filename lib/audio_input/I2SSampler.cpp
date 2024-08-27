@@ -106,7 +106,7 @@ void I2SSampler::stop() {
 
     // Wait until the task has stopped (optional but recommended)
     while (eTaskGetState(m_reader_task_handle) != eDeleted) {
-        delay(10); // Small delay to let the task exit gracefully
+        delay(40); // Small delay to let the task exit gracefully
     }
     i2s_driver_install(I2S_NUM_0, &this->config, 4, NULL);
     Serial.println("I2S Reader Task stopped.");

@@ -4,7 +4,12 @@
 #include <esp_task_wdt.h>
 #include "I2SMicSampler.h"
 #include "config.h"
-#include "Application.h"
+// #include "Application.h"
+#include "Application2.h"
+#include "state_machine/DetectWakeWordState.h"
+
+// #include "state_machine/TxtToGPT.h"
+// #include "state_machine/TxtToSpeech.h"
 
 
 #define I2S_WS 19     // aka LRCL
@@ -35,17 +40,22 @@ i2s_pin_config_t i2s_mic_pins = {
     .data_out_num = I2S_PIN_NO_CHANGE,
     .data_in_num = I2S_SD};
 
+
 // This task does all the heavy lifting for our application
 void applicationTask(void *param)
 {
-  Application *application = static_cast<Application *>(param);
+  DetectWakeWordState *detect_marvin = static_cast<DetectWakeWordState *>(param);
 
   const TickType_t xMaxBlockTime = pdMS_TO_TICKS(10000);
+  Serial.printf("In application task\n");
   while (true)
   {
-    if (application->m_sample_provider->stop_task == true)
+    if (detect_marvin->m_sample_provider->stop_task == true)
     {
-      application->run();
+      Serial.printf("Before deleting task\n");
+      detect_marvin->exitState();
+      // application->run();
+      vTaskDelete(NULL);
     }
     else
     {
@@ -53,7 +63,8 @@ void applicationTask(void *param)
       uint32_t ulNotificationValue = ulTaskNotifyTake(pdTRUE, xMaxBlockTime);
       if (ulNotificationValue > 0)
       {
-        application->run();
+        Serial.printf("In application task2\n");
+        detect_marvin->run();
       }
     }
     //
@@ -89,17 +100,37 @@ void setup()
   I2SSampler *i2s_sampler = new I2SMicSampler(i2s_mic_pins, i2sMemsConfigBothChannels, false);
 
   // create our application
-  Application *application = new Application(i2s_sampler);
+  DetectWakeWordState *detect_marvin = new DetectWakeWordState(i2s_sampler);
+  detect_marvin->enterState();
+
 
   // set up the i2s sample writer task
   TaskHandle_t applicationTaskHandle; 
-  xTaskCreate(applicationTask, "Application Task", 8192, application, 1, &applicationTaskHandle);
+  xTaskCreate(applicationTask, "Application Task", 8192, detect_marvin, 1, &applicationTaskHandle);
 
   // start sampling from i2s device - use I2S_NUM_0 as that's the one that supports the internal ADC
   i2s_sampler->start(I2S_NUM_0, applicationTaskHandle);
+  while(true)
+  {
+    vTaskDelay(100);
+    Serial.printf("In while\n");
+    if (i2s_sampler->stop_task == true)
+    {
+      Serial.printf("In if stop task\n");
+      break;
+    }
+  }
+  // delete detect_marvin;
+  // Serial.printf("After deleteing application");
 }
 
 void loop()
 {
-  vTaskDelay(100);
+  bool stop_loop = false;
+  Phase2* phase2_obj = new Phase2();
+  while(!stop_loop)
+  {
+  phase2_obj->run();
+  }
+  Serial.printf("In loop\n");
 }

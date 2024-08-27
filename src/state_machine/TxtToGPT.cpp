@@ -64,12 +64,10 @@ bool TxtToGPT::run()
     const char* chatgpt_A = results_0["message"]["content"];
     if (chatgpt_A == nullptr)
     {
-        Serial.printf("TXTTOGPT-1\n");
         this->response = new String("I didn't understand, please speak again");
     }
     else
     {
-        Serial.printf("TXTTOGPT6\n");
         Serial.printf("%s", chatgpt_A);
         this->response = new String(chatgpt_A);
     }
