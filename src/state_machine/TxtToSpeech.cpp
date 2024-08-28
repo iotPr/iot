@@ -51,7 +51,7 @@ bool TxtToSpeech::run()
         if (current_word.length() >= max_length || (&word == &words[words.size()-1]))
         {
             Serial.println(current_word);
-            audio->connecttospeech(current_word.c_str(), "en");
+            audio->connecttospeech(current_word.c_str(), "it");
             // delay(1000);  // Add delay here
             current_word = "";
         }

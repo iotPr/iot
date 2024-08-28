@@ -1,8 +1,12 @@
 #ifndef _NETWORK_PARAM_H
 #define _NETWORK_PARAM_H
 
-const char *ssid = "Home04";
-const char *password = "13243546";
+// const char *ssid = "Home04";
+// const char *password = "13243546";
+
+// IOT ssid
+const char *ssid = "ICST";
+const char *password = "arduino123";
 const char*  server = "speech.googleapis.com";
 
 // To get the certificate for your region run:

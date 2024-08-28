@@ -4,6 +4,10 @@
 #include <ArduinoJson.h>
 #include <driver/i2s.h>
 
+#define RED_PIN 14
+#define GREEN_PIN 12
+#define BLUE_PIN 13
+
 int read_from_mic(uint8_t* data, int numData) {
     size_t bytes_read = 0;
     esp_err_t result = i2s_read(I2S_NUM_0, (void*)data, numData, &bytes_read, portMAX_DELAY);
@@ -68,6 +72,9 @@ String* CloudSpeechClient::Transcribe() {
   //start recording 
   digitalWrite(2, HIGH);
   Serial.printf("Start speaking\n");
+  digitalWrite(BLUE_PIN, HIGH);
+  digitalWrite(GREEN_PIN, LOW);
+  digitalWrite(RED_PIN, LOW);
   for (int i = 0; i<record_size/buffer_size; i++)
   {
     int data_read = read_from_mic(data, buffer_size);
@@ -76,6 +83,9 @@ String* CloudSpeechClient::Transcribe() {
     client.print(enc);
   }
   Serial.printf("Stop speaking\n");
+  digitalWrite(BLUE_PIN, LOW);
+  digitalWrite(GREEN_PIN, LOW);
+  digitalWrite(RED_PIN, HIGH);
   digitalWrite(2, LOW);
   //stop recording 
   client.print(HttpBody3);
@@ -94,6 +104,9 @@ String* CloudSpeechClient::Transcribe() {
     // Serial.write(client.read());
   }
 client.stop();
+digitalWrite(BLUE_PIN, HIGH);
+digitalWrite(GREEN_PIN, LOW);
+digitalWrite(RED_PIN, LOW);
 Serial.print("My Answer - ");Serial.println(My_Answer);
 int postion = My_Answer.indexOf('{');
 Serial.println(postion);

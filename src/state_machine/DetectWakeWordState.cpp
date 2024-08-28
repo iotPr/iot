@@ -53,7 +53,7 @@ bool DetectWakeWordState::run()
     // log out some timing info
     // use quite a high threshold to prevent false positives
     Serial.printf("%f\n", output);
-    if (output > 0.80)
+    if (output > 0.70)
     {
         m_number_of_detections++;
         if (m_number_of_detections > 0)

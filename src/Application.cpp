@@ -5,6 +5,9 @@
 // #include "IndicatorLight.h"
 // #include "Speaker.h"
 // #include "IntentProcessor.h"
+#define RED_PIN 14
+#define GREEN_PIN 12
+#define BLUE_PIN 13
 
 
 Application::Application(I2SSampler *sample_provider)

@@ -8,6 +8,7 @@
 #include "Application2.h"
 #include "state_machine/DetectWakeWordState.h"
 
+
 // #include "state_machine/TxtToGPT.h"
 // #include "state_machine/TxtToSpeech.h"
 
@@ -16,6 +17,15 @@
 #define I2S_SD 4     // aka DOUT
 #define I2S_SCK 18        // aka BCLK
 
+#define RED_PIN 14
+#define GREEN_PIN 12
+#define BLUE_PIN 13
+
+
+
+// IOT ssid
+const char *IOT_ssid = "ICST";
+const char *IOT_password = "arduino123";
 
 // i2s config for reading from both channels of I2S
 i2s_config_t i2sMemsConfigBothChannels = {
@@ -47,11 +57,14 @@ void applicationTask(void *param)
   DetectWakeWordState *detect_marvin = static_cast<DetectWakeWordState *>(param);
 
   const TickType_t xMaxBlockTime = pdMS_TO_TICKS(10000);
-  Serial.printf("In application task\n");
+  // Serial.printf("In application task\n");
   while (true)
   {
     if (detect_marvin->m_sample_provider->stop_task == true)
     {
+      digitalWrite(GREEN_PIN, LOW);
+      digitalWrite(BLUE_PIN, LOW);
+      digitalWrite(RED_PIN, HIGH);
       Serial.printf("Before deleting task\n");
       detect_marvin->exitState();
       // application->run();
@@ -63,7 +76,10 @@ void applicationTask(void *param)
       uint32_t ulNotificationValue = ulTaskNotifyTake(pdTRUE, xMaxBlockTime);
       if (ulNotificationValue > 0)
       {
-        Serial.printf("In application task2\n");
+        digitalWrite(RED_PIN, LOW);
+        digitalWrite(BLUE_PIN, LOW);
+        digitalWrite(GREEN_PIN, HIGH);
+        // Serial.printf("In application task2\n");
         detect_marvin->run();
       }
     }
@@ -73,6 +89,13 @@ void applicationTask(void *param)
 
 void setup()
 {
+
+  pinMode(RED_PIN, OUTPUT);
+  pinMode(GREEN_PIN, OUTPUT);
+  pinMode(BLUE_PIN, OUTPUT);
+
+
+
   pinMode(2, OUTPUT);
   digitalWrite(2, HIGH);
 
@@ -83,7 +106,7 @@ void setup()
   // start up wifi
   // launch WiFi
   WiFi.mode(WIFI_STA);
-  WiFi.begin("Home04", "13243546");
+  WiFi.begin(IOT_ssid, IOT_password);
   if (WiFi.waitForConnectResult() != WL_CONNECTED)
   {
     Serial.println("Connection Failed! Rebooting...");
@@ -113,7 +136,7 @@ void setup()
   while(true)
   {
     vTaskDelay(100);
-    Serial.printf("In while\n");
+    // Serial.printf("In while\n");
     if (i2s_sampler->stop_task == true)
     {
       Serial.printf("In if stop task\n");

@@ -11,6 +11,10 @@
 #include <string.h>
 #include "speech_to_text/CloudSpeechClient.h"
 
+#define RED_PIN 14
+#define GREEN_PIN 12
+#define BLUE_PIN 13
+
 SpeechToText::SpeechToText()
 {
     // save the sample provider for use later
@@ -18,6 +22,9 @@ SpeechToText::SpeechToText()
 void SpeechToText::enterState()
 {
     Serial.println("Entering Speech to Text State");
+    digitalWrite(BLUE_PIN, LOW);
+    digitalWrite(GREEN_PIN, LOW);
+    digitalWrite(RED_PIN, HIGH);
 }
 
 void SpeechToText::speech_to_text()
