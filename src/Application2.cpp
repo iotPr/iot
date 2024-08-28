@@ -33,8 +33,7 @@ String Phase2::buildPayload() {
 
 Phase2::Phase2()
 {
-    stt_client = new CloudSpeechClient();
-    m_current_state = new SpeechToText(stt_client);
+    m_current_state = new SpeechToText();
     m_current_state_name = StateNames::SPEECHTOTXT;
     m_current_state->enterState();
 }
@@ -82,7 +81,7 @@ void Phase2::set_next_state()
     else if (m_current_state_name == StateNames::TXTTOSPEECH)
     {
         delete pre_state;
-        m_current_state = new SpeechToText(this->stt_client);
+        m_current_state = new SpeechToText();
         m_current_state_name = StateNames::SPEECHTOTXT;
     }
 }

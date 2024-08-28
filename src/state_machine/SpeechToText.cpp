@@ -1,5 +1,4 @@
 #include <Arduino.h>
-#include "I2SSampler.h"
 #include "SpeechToText.h"
 #include "../config.h"
 
@@ -7,9 +6,9 @@
 #define GREEN_PIN 12
 #define BLUE_PIN 13
 
-SpeechToText::SpeechToText(CloudSpeechClient* client)
+SpeechToText::SpeechToText()
 {
-    this->client = client;
+    
 }
 void SpeechToText::enterState()
 {
@@ -21,8 +20,8 @@ void SpeechToText::enterState()
 
 void SpeechToText::speech_to_text()
 {
-    // CloudSpeechClient* cloudSpeechClient = new CloudSpeechClient();
-    response = this->client->Transcribe();
+    CloudSpeechClient* cloudSpeechClient = new CloudSpeechClient();
+    response = cloudSpeechClient->Transcribe();
     if (*response == "" || response == nullptr)
     {
         Serial.printf("Google Speech couldnt catch any speech\n");
@@ -30,7 +29,7 @@ void SpeechToText::speech_to_text()
         response = new String("Please Try Again");
         delete error;
     }
-    // delete cloudSpeechClient;
+    delete cloudSpeechClient;
 }
 bool SpeechToText::run()
 {

@@ -102,7 +102,6 @@ String* CloudSpeechClient::Transcribe() {
     My_Answer = My_Answer + temp;
     // Serial.write(client.read());
   }
-client.stop();
 digitalWrite(BLUE_PIN, HIGH);
 digitalWrite(GREEN_PIN, LOW);
 digitalWrite(RED_PIN, LOW);

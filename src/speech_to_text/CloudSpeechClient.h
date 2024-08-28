@@ -1,7 +1,6 @@
 #ifndef _CLOUDSPEECHCLIENT_H
 #define _CLOUDSPEECHCLIENT_H
 #include <WiFiClientSecure.h>
-#include "I2SSampler.h"
 
 enum Authentication {
   USE_ACCESSTOKEN,

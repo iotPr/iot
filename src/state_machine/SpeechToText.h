@@ -10,10 +10,9 @@ class SpeechToText : public State
 {
 private:
     String* response; 
-    CloudSpeechClient* client;
     void speech_to_text();
 public:
-    SpeechToText(CloudSpeechClient* client);
+    SpeechToText();
     String* get_response();
     void enterState();
     bool run();

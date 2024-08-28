@@ -6,7 +6,6 @@
 #include <base64.h>
 #include <ArduinoJson.h>
 #include <vector>
-#include "speech_to_text/CloudSpeechClient.h"
 
 class State;
 
@@ -24,7 +23,6 @@ private:
     State* m_current_state;
     StateNames m_current_state_name;
     void set_next_state();
-    CloudSpeechClient* stt_client;
 
 public:
     std::vector<String> conversationHistory;  // Vector to hold the message history
