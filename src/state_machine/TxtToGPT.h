@@ -8,12 +8,13 @@
 class TxtToGPT : public State
 {
 private:
-    String* gpt_request;
+    // String* gpt_request;
     const char* apiKey;
+    String payload; 
     String* response;
 
 public:
-    TxtToGPT(String* gpt_request);
+    TxtToGPT(String payload);
     void enterState();
     String* get_response();
     bool run();

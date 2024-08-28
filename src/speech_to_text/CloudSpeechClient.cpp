@@ -23,9 +23,8 @@ int read_from_mic(uint8_t* data, int numData) {
 }
 
 
-CloudSpeechClient::CloudSpeechClient(Authentication authentication) 
+CloudSpeechClient::CloudSpeechClient() 
 {
-  this->authentication = authentication;
   client.setCACert(root_ca);
   int trys_to_connect = 3;
   while(!client.connect(server, 443) && trys_to_connect > 0)

@@ -5,14 +5,36 @@
 #include "state_machine/TxtToGPT.h"
 #include "state_machine/TxtToSpeech.h"
 
-// #include "IndicatorLight.h"
-// #include "Speaker.h"
-// #include "IntentProcessor.h"
+void Phase2::addMessageToHistory(const String& role, String& content) {
+    if (role == "user")
+        content = content + String(", answer in one sentence");
+    String message = "{\"role\": \"" + role + "\", \"content\": \"" + content + "\"}";
+    this->conversationHistory.push_back(message);
+}
 
+String Phase2::buildPayload() {
+    String messagesArray = "[";
+    for (size_t i = 0; i < this->conversationHistory.size(); ++i) {
+        messagesArray += this->conversationHistory[i];
+        if (i != this->conversationHistory.size() - 1) {
+            messagesArray += ", ";
+        }
+    }
+    messagesArray += "]";
+
+    String payload = "{"
+                      "\"model\": \"gpt-4\","
+                      "\"messages\": " + messagesArray + ","
+                      "\"max_tokens\": 50"
+                    "}";
+
+    return payload;
+}
 
 Phase2::Phase2()
 {
-    m_current_state = new SpeechToText();
+    stt_client = new CloudSpeechClient();
+    m_current_state = new SpeechToText(stt_client);
     m_current_state_name = StateNames::SPEECHTOTXT;
     m_current_state->enterState();
 }
@@ -43,21 +65,24 @@ void Phase2::set_next_state()
         }
         else
         {
+            this->addMessageToHistory("user", *gpt_q);
+            String payload = this->buildPayload();
             m_current_state_name = StateNames::TXTTOGPT;
-            m_current_state = new TxtToGPT(gpt_q);
+            m_current_state = new TxtToGPT(payload);
         }
     }
     else if (m_current_state_name == StateNames::TXTTOGPT)
     {
         String* gpt_answer = m_current_state->get_response();
         delete pre_state;
+        this->addMessageToHistory("assistant", *gpt_answer);
         m_current_state_name = StateNames::TXTTOSPEECH;
         m_current_state = new TxtToSpeech(gpt_answer);
     }
     else if (m_current_state_name == StateNames::TXTTOSPEECH)
     {
         delete pre_state;
-        m_current_state = new SpeechToText();
+        m_current_state = new SpeechToText(this->stt_client);
         m_current_state_name = StateNames::SPEECHTOTXT;
     }
 }

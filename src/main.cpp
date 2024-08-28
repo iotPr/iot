@@ -24,8 +24,8 @@
 
 
 // IOT ssid
-const char *IOT_ssid = "ICST";
-const char *IOT_password = "arduino123";
+const char *IOT_ssid = "Home04";
+const char *IOT_password = "13243546";
 
 // i2s config for reading from both channels of I2S
 i2s_config_t i2sMemsConfigBothChannels = {

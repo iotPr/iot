@@ -3,11 +3,12 @@
 #include <ArduinoJson.h>
 
 
-TxtToGPT::TxtToGPT(String* gpt_request)
+TxtToGPT::TxtToGPT(String payload)
 {
     Serial.printf("I'm in ttg constructor");
-    this->gpt_request = gpt_request;
-    Serial.println(*this->gpt_request);
+    // this->gpt_request = gpt_request;
+    this->payload = payload;
+    // Serial.println(*this->gpt_request);
     apiKey = "sk-Dem3XHGSgPVtMeJUO8iWZxQTVGrdJjMbq4czUPWGqZT3BlbkFJPFZeKbc6Gl6xxCSpRwjwAIkSOT83_ENmVKGDsCHRkA";
 }
 void TxtToGPT::enterState()
@@ -21,21 +22,23 @@ bool TxtToGPT::run()
         Serial.println("Error in WiFi connection");
   }
     Serial.printf("TXTTOGPT1\n");
-    Serial.println(*gpt_request);
-    String gpt_request_in_string = *gpt_request + String(", answer in one sentence");
+    // Serial.println(*gpt_request);
+    // String gpt_request_in_string = *gpt_request + String(", answer in one sentence");
     HTTPClient http;
     http.begin("https://api.openai.com/v1/chat/completions");  // Correct endpoint for chat-based interactions
     http.addHeader("Content-Type", "application/json");
     http.addHeader("Authorization", "Bearer " + String(apiKey));
-    String payload = "{"
-                      "\"model\": \"gpt-4\","
-                      "\"messages\": [{\"role\": \"user\", \"content\": \"" + gpt_request_in_string + "\"}],"
-                      "\"max_tokens\": 50"
-                    "}";
-    delete gpt_request;
-    Serial.printf("TXTTOGPT2\n");
+    // String payload = "{"
+    //                   "\"model\": \"gpt-4\","
+    //                   "\"messages\": [{\"role\": \"user\", \"content\": \"" + gpt_request_in_string + "\"}],"
+    //                   "\"max_tokens\": 50"
+    //                 "}";
+    
+    // delete gpt_request;
+    Serial.printf("payload is:\n");
     String gpt_ans;
-    int httpResponseCode = http.POST(payload);
+    Serial.println(this->payload);
+    int httpResponseCode = http.POST(this->payload);
     if (httpResponseCode > 0) {
         gpt_ans = http.getString();
     } else {

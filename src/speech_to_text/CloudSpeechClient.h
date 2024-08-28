@@ -10,10 +10,9 @@ enum Authentication {
 
 class CloudSpeechClient {
   WiFiClientSecure client;
-  Authentication authentication;
 
 public:
-  CloudSpeechClient(Authentication authentication);
+  CloudSpeechClient();
   ~CloudSpeechClient();
   String* Transcribe();
   void sendAudioChunks();

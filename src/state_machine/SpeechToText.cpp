@@ -1,23 +1,15 @@
 #include <Arduino.h>
-// #include <ArduinoJson.h>
 #include "I2SSampler.h"
-// #include "RingBuffer.h"
 #include "SpeechToText.h"
-// #include "IndicatorLight.h"
-// #include "Speaker.h"
-// #include "IntentProcessor.h"
-// #include "WitAiChunkedUploader.h"
 #include "../config.h"
-#include <string.h>
-#include "speech_to_text/CloudSpeechClient.h"
 
 #define RED_PIN 14
 #define GREEN_PIN 12
 #define BLUE_PIN 13
 
-SpeechToText::SpeechToText()
+SpeechToText::SpeechToText(CloudSpeechClient* client)
 {
-    // save the sample provider for use later
+    this->client = client;
 }
 void SpeechToText::enterState()
 {
@@ -29,11 +21,8 @@ void SpeechToText::enterState()
 
 void SpeechToText::speech_to_text()
 {
-    Serial.println("In speech to text");
-    CloudSpeechClient* cloudSpeechClient = new CloudSpeechClient(USE_APIKEY);
-    Serial.println("Creating client obj");
-    response = cloudSpeechClient->Transcribe();
-    Serial.printf("Finish transcribe\n");
+    // CloudSpeechClient* cloudSpeechClient = new CloudSpeechClient();
+    response = this->client->Transcribe();
     if (*response == "" || response == nullptr)
     {
         Serial.printf("Google Speech couldnt catch any speech\n");
@@ -41,8 +30,7 @@ void SpeechToText::speech_to_text()
         response = new String("Please Try Again");
         delete error;
     }
-    delete cloudSpeechClient;
-    Serial.printf("After deleteing client\n");
+    // delete cloudSpeechClient;
 }
 bool SpeechToText::run()
 {
