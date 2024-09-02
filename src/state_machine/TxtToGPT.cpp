@@ -9,7 +9,7 @@ TxtToGPT::TxtToGPT(String payload)
     // this->gpt_request = gpt_request;
     this->payload = payload;
     // Serial.println(*this->gpt_request);
-    apiKey = "sk-Dem3XHGSgPVtMeJUO8iWZxQTVGrdJjMbq4czUPWGqZT3BlbkFJPFZeKbc6Gl6xxCSpRwjwAIkSOT83_ENmVKGDsCHRkA";
+    apiKey = "<GPT_API_HERE>";
 }
 void TxtToGPT::enterState()
 {

@@ -1,12 +1,12 @@
 #ifndef _NETWORK_PARAM_H
 #define _NETWORK_PARAM_H
 
-// const char *ssid = "Home04";
-// const char *password = "13243546";
+const char *ssid = "<SSID_HERE>";
+const char *password = "<PASSWORD_HERE>";
 
 // IOT ssid
-const char *ssid = "ICST";
-const char *password = "arduino123";
+// const char *ssid = "ICST";
+// const char *password = "arduino123";
 const char*  server = "speech.googleapis.com";
 
 // To get the certificate for your region run:
@@ -53,7 +53,7 @@ const char* root_ca=
 // Google recommends to use Access Token.
 
 // It is also possible to use "API Key" instead of "Access Token". It doesn't have time limit.
-const String ApiKey = "AIzaSyCk9NImxphkSZAq4deZS1e77cCC7BAQdfc";
+const String ApiKey = "<GOOGLE_API_HERE>";
 
 // see https://cloud.google.com/docs/authentication?hl=ja#getting_credentials_for_server-centric_flow
 // see https://qiita.com/basi/items/3623a576b754f738138e (Japanese)
