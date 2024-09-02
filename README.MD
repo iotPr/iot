@@ -29,7 +29,7 @@ The wake word 'Marvin' is trained using the TensorFlow library. Approximately 20
 Please refer to the project documentation for more detailed information.
 To use this voice assistant, you will need to obtain the GPT API and Google API credentials. Once you have obtained these credentials, replace the placeholders "GPT_API_HERE" and "GOOGLE_API_HERE" in the code with your actual API keys.
 
-Please note that the GPT API is used for processing the transcribed text, while the Google API is used for translation purposes.
+Please note that the GPT API is used to process the transcribed text, while the Google API is used for voice-to-text purposes.
 
 For detailed instructions on how to obtain the API credentials and replace them in the code, please refer to the project documentation.
 Before uploading the code to the ESP32 board, make sure to update the following parameters:
